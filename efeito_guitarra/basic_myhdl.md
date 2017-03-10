@@ -162,6 +162,38 @@ digital. Estruturando a função bench desse modo podemos reutilizá-la
 independente de que circuito estamos testando. Isso vai acelerar a escrita de
 novos testes.
 
+E como seria um teste?
+
+``` python
+def test_aquele_um_porcento():
+    '''
+        Teste que verifica....
+    '''
+    def estimulo():
+        '''
+            Função que cria os estímulos para o caso de teste
+        '''
+        pass
+
+    def verificacao():
+        '''
+            Função que verifica as saídas e no geral controla a duração da
+            simulação
+        '''
+        pass
+
+    # Criamos o objeto responsável por executar a simulação
+    simulator = myhdl.Simulation(bench(estimulo, verificacao))
+    # executamos a simulação
+    simulator.run()
+```
+
+Nós iremos preencher as lacunas faltantes e definir como se dá a interação entre
+cada um dos elementos da nossa simulação. Um ponto importante a destacar:
+
+**Cada uma das funções declaradas modela um circuito digital independente e
+deve ser implementada considerando que sua execução é paralela**
+
 ## Descrição dos circuitos
 
 O primeiro ponto a compreender é que estamos desenvolvendo um circuito. No fim
