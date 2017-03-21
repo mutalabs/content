@@ -116,7 +116,7 @@ Nosso primeiro arquivo se chama build.py. Nele nós vamos montar um aplicativo d
 linha de comando pra executar as etapas de teste e geração da imagem.
 
 O outro arquivo que iremos tratar será o arquivo principal do nosso circuito
-digital. Nós o chamaremos de top_circuit.py.
+digital. Nós o chamaremos de simple.py.
 
 Entraremos em detalhes sobre cada um deles mais adiante.
 
@@ -140,7 +140,7 @@ traduzido como bancada, logo test bench é a nossa bancada de testes). Essa
 função é responsável por fazer a ligação entre os sinais de entrada e a saída do
 circuito que iremos validar. Com isso é bom que nossos testes possuam uma
 granularidade boa em termos de circuito, no software esses testes são conhecidos
-como testes unitários. 
+como testes unitários.
 
 Nossa função bench terá a seguinte estrutura:
 
@@ -148,9 +148,9 @@ Nossa função bench terá a seguinte estrutura:
 def bench(estimulo, verificacao, test_parameters):
     # Aqui colocamos os sinais necessários ao teste
     signals = SignalList()
-    # Aqui instanciamos o 
+    #Aqui instanciamos o
     dut = circuito_a_ser_testado(signals)
-    # Esse método gera os sinais de entrada no circuito pro teste
+    #Esse método gera os sinais de entrada no circuito pro teste
     f_estimulo = estimulo(signals)
     # Esse método verifica as saídas do circuito para garantir a corretude.
     f_verifica = verificacao(signals)
@@ -188,8 +188,9 @@ def test_aquele_um_porcento():
     simulator.run()
 ```
 
-Nós iremos preencher as lacunas faltantes e definir como se dá a interação entre
-cada um dos elementos da nossa simulação. Um ponto importante a destacar:
+Nós iremos preencher as lacunas e definir como se dá a interação entre
+cada um dos elementos da nossa simulação nas próximas seções. Um ponto
+importante a destacar:
 
 **Cada uma das funções declaradas modela um circuito digital independente e
 deve ser implementada considerando que sua execução é paralela**
@@ -201,12 +202,102 @@ do nosso projeto teremos algo que irá se relacionar com o mundo através de um
 conjunto de interfaces elétricas. Então precisamos deixar claro quais são os
 "pinos" do nosso circuito.
 
+Vamos dar uma olhada no arquivo simple.py.
+
+``` python
+from collections import namedtuple
+import myhdl as hdl
+
+Parameters = namedtuple('Parameters', 'nleds')
+
+class CircuitPorts(object):
+    '''
+        This is the place where we declare the circuit ports
+    '''
+    def __init__(self):
+        pass
+
+def circuit(self, signals):
+    pass
+
+```
+
+Temos declarados três componentes importantes no código acima:
+
+    - Parameters: Essa classe é uma namedtuple que irá descrever os parâmetros
+      variáveis do nosso circuito. Ou seja se quisermos criar variações do
+      circuito serão esses os parâmetros alteráveis.
+    - CircuitPorts: Essa classe determina quais são as portas do nosso circuito
+      digital.
+    - circuit: Essa função contém a descrição do nosso circuito digital. E ela
+      que será chamadad quando quisermos utilizar o circuito.
+
 # Nosso circuito inicial
 
-## Um teste para um contador
-## Instanciando o contador no circuito principal
+Para ilustrar o nosso fluxo antes de partirmos para o projeto que nos propusemos
+a fazer iremos criar um contador que irá se ligar a um display de sete
+segmentos.
+
 ## Comportamento do circuito principal
-## Descrevendo um contador
-## Gerando o vhdl/verilog
+
+Vamos inicialmente tratar do nosso circuito principal. Esperamos que o seguinte
+aconteça:
+- Nosso contador se iniciará em zero.
+- Ao apertarmos um botão o dispositivo acrescentará 1 a contagem.
+- Um segundo botão reduzirá a contagem de 1.
+
+### O teste do nosso circuito principal
+
+Para testar o nosso projeto vamos criar na pasta test o arquivo test_design.py.
+
+Com o seguinte conteúdo:
+
+``` python
+import myhdl as mhd
+import
+
+def bench(stimulus, verification):
+    pass
+
+def test_initial_state():
+    '''
+        Test that the initial behavior is correct.
+        - The seven segment display must show zero
+    '''
+    def stimulus():
+        pass
+
+    def verification():
+        pass
+
+    simulator = mhd.Simulation(bench(stimulus, verification))
+    simulator.run()
+
+```
+
+Observe que estamos revisitando a estrutura que usamos de exemplo para o teste.
+Vamos focar agora na nossa função bench. 
+
+O papel principal da função bench e servir de estrtutura para o teste do nosso
+circuito evitando que tenhamos a reescrita de uma estrutura muito reutilizada.
+Nós poderíamos mover essa função para um pacote e reutilizar em todos os testes
+aumentando assim a reutilização dessa infraestrutura e a reutilização de código.
+Por ora vamos voltar a criação do nosso teste.
+
+O objetivo da função bench é prover um circuito digital a ser utilizado pros
+testes 
+
+``` python
+def bench(estimulo, verificacao, test_parameters):
+    # Aqui colocamos os sinais necessários ao teste
+    signals = SignalList()
+    #Aqui instanciamos o
+    dut = circuito_a_ser_testado(signals)
+    #Esse método gera os sinais de entrada no circuito pro teste
+    f_estimulo = estimulo(signals)
+    # Esse método verifica as saídas do circuito para garantir a corretude.
+    f_verifica = verificacao(signals)
+    return dut, f_estimulo, f_verifica
+```
 
 # Próximo artigo
