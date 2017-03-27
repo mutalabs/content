@@ -165,6 +165,7 @@ novos testes.
 E como seria um teste?
 
 ``` python
+
 def test_aquele_um_porcento():
     '''
         Teste que verifica....
@@ -186,6 +187,7 @@ def test_aquele_um_porcento():
     simulator = myhdl.Simulation(bench(estimulo, verificacao))
     # executamos a simulação
     simulator.run()
+
 ```
 
 Nós iremos preencher as lacunas e definir como se dá a interação entre
@@ -276,7 +278,7 @@ def test_initial_state():
 ```
 
 Observe que estamos revisitando a estrutura que usamos de exemplo para o teste.
-Vamos focar agora na nossa função bench. 
+Vamos focar agora na nossa função bench.
 
 O papel principal da função bench e servir de estrtutura para o teste do nosso
 circuito evitando que tenhamos a reescrita de uma estrutura muito reutilizada.
@@ -285,19 +287,59 @@ aumentando assim a reutilização dessa infraestrutura e a reutilização de có
 Por ora vamos voltar a criação do nosso teste.
 
 O objetivo da função bench é prover um circuito digital a ser utilizado pros
-testes 
+testes
 
 ``` python
-def bench(estimulo, verificacao, test_parameters):
-    # Aqui colocamos os sinais necessários ao teste
-    signals = SignalList()
-    #Aqui instanciamos o
-    dut = circuito_a_ser_testado(signals)
-    #Esse método gera os sinais de entrada no circuito pro teste
-    f_estimulo = estimulo(signals)
-    # Esse método verifica as saídas do circuito para garantir a corretude.
-    f_verifica = verificacao(signals)
+def bench(stimulus, verification, circuit_parameters):
+    signals = design.CircuitPorts(circuit_parameters)
+    dut = design.circuit(signals)
+    f_estimulo = stimulus(signals)
+    f_verifica = verification(signals)
     return dut, f_estimulo, f_verifica
 ```
 
+No exemplo acima temos a descrição do circuito digital. Em um diagrama temos
+algo assim:
+
+### Inserir imagem do teste
+
+Vamos agora olhar a implementação do teste:
+
+``` python
+def test_initial_state():
+    '''
+        É importante deixarmos claro qual o objetivo do teste. Isso nos ajuda a
+        recordar ou descobrir o que motivou as escolhas do desenvolvedor no
+        passado.
+
+        Esse primeiro teste valida que no início o display mostrará o valor
+        zero.
+    '''
+
+    # Nessa declaração inicial temos os parâmetros do circuito sob teste
+    circuit_param = design.Parameters(nleds=8)
+
+    def stimulus(signals):
+        '''
+            Dado que o processo de inicialização é interno não precisamos de
+            estímulo ao circuito digital nesse ponto.abs
+        '''
+        yield mhd.delay(1)
+
+    def verification(signals):
+        yield mhd.delay(1)
+
+    simulator = mhd.Simulation(bench(stimulus, verification, circuit_param))
+    simulator.run(10)
+```
+
+É importante destacar as ideias contidas nessa estrutura. Primeiro a função
+bench que funciona como um diagrama de circuito entre CIs, você pode considerar
+como um esquemático. Escrever HDL nesse estilo é conhecido como estrutural. 
+
+Salvo o uso da sintaxe do Python e nossos esforços para deixar a coisa mais
+legível e reutilizável, o conceito é o mesmo encontrado no VHDL e Verilog.
+
+Repare que nesse ponto não inserimos ainda um teste propriamente dito, mas o
+código acima já funciona e nos diz que o que implementamos está correto.
 # Próximo artigo
