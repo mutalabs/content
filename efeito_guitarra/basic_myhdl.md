@@ -352,7 +352,7 @@ python -m pytest
 Na execução do teste obtemos a resposta que 1 teste foi executado e passou.
 
 Observem que inserimos o yield nas funções de teste e executamos o método run
-com o valor 10. 
+com o valor 10.
 
 Precisamos inserir o yield para devolvermos o controle para a simulação para que
 ela decida o próximo passo. Funciona da seguinte maneira, todos os módulos
@@ -361,7 +361,7 @@ por um bloco de cada vez e eles são sincronizados ao final de cada ciclo, com
 isso cada bloco opera com os valores do final do último ciclo e atualiza os
 sinais para o próximo ciclo. O parâmetro que inserimos no método run serve para
 controlarmos o número de ciclos de simulação. Isso não será necessário quando
-inserirmos a verificação através de assert na função verification. 
+inserirmos a verificação através de assert na função verification.
 
 Para esse teste a nossa função stimulus fica exatamente daquele modo. Queremos
 validar que ao ligar o dispositivo a informação correta estará no display. Para
@@ -391,6 +391,8 @@ automatizado é uma ferramenta importantíssima, mas não nos priva de cometermo
 erros no próprio teste. Por isso é importante que o teste escrito seja tão
 isolado quando possível para tornar simples a detecção das falhas que venham a
 acontecer no próprio teste.
+
+O código que temos até o momento pode ser encontrado [aqui](https://github.com/euripedesrocha/simple_hdl/tree/test_main_circuit).
 
 # Próximo artigo
 
