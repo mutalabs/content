@@ -335,11 +335,65 @@ def test_initial_state():
 
 É importante destacar as ideias contidas nessa estrutura. Primeiro a função
 bench que funciona como um diagrama de circuito entre CIs, você pode considerar
-como um esquemático. Escrever HDL nesse estilo é conhecido como estrutural. 
+como um esquemático. Escrever HDL nesse estilo é conhecido como estrutural.
 
 Salvo o uso da sintaxe do Python e nossos esforços para deixar a coisa mais
 legível e reutilizável, o conceito é o mesmo encontrado no VHDL e Verilog.
 
 Repare que nesse ponto não inserimos ainda um teste propriamente dito, mas o
 código acima já funciona e nos diz que o que implementamos está correto.
+
+Podemos validar a implementação acima executando:
+
+```
+python -m pytest
+```
+
+Na execução do teste obtemos a resposta que 1 teste foi executado e passou.
+
+Observem que inserimos o yield nas funções de teste e executamos o método run
+com o valor 10. 
+
+Precisamos inserir o yield para devolvermos o controle para a simulação para que
+ela decida o próximo passo. Funciona da seguinte maneira, todos os módulos
+executam em pararlelo. Para emular esse cenário o estado da simulação é alterado
+por um bloco de cada vez e eles são sincronizados ao final de cada ciclo, com
+isso cada bloco opera com os valores do final do último ciclo e atualiza os
+sinais para o próximo ciclo. O parâmetro que inserimos no método run serve para
+controlarmos o número de ciclos de simulação. Isso não será necessário quando
+inserirmos a verificação através de assert na função verification. 
+
+Para esse teste a nossa função stimulus fica exatamente daquele modo. Queremos
+validar que ao ligar o dispositivo a informação correta estará no display. Para
+outros circuitos essa função fica naturalmente mais complexa. Teremos exemplos
+desse tipo na sequência dessa série.
+
+## Implementando a função verification
+
+No nosso teste queremos validar que ao inicializar o circuito envia para a saída
+leds os sinais que farão o display de sete segmentos mostrar o valor 0. Para
+isso usaremos o assert do python. A função fica assim:
+
+```python
+def verification(signals):
+    assert signals.leds == 0, 'The display must show Zero'
+    yield mhd.delay(1)
+```
+
+Se executarmos novamente o teste veremos que ele irá passar. É também uma boa
+prática forçar que o seu teste falhe pra você garantir que o seu teste está
+sendo executado que ele realmente detectará a falha que você pretende evitar com
+o teste.
+
+Se você está um pouco mais atento a leitura irá detectar que o nosso teste
+possui um bug! Ele foi inserido ali propositalmente para alertar que o teste
+automatizado é uma ferramenta importantíssima, mas não nos priva de cometermos
+erros no próprio teste. Por isso é importante que o teste escrito seja tão
+isolado quando possível para tornar simples a detecção das falhas que venham a
+acontecer no próprio teste.
+
 # Próximo artigo
+
+Na sequência dessa série vamos corrigir o teste e estabelecer uma arquitetura
+particionando os blocos do nosso sistema, escrever circuitos combinacionais e
+sequenciais e escrever um gerador de clock para os nossos testes.
